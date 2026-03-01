@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Romantic Album</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+transition:0.3s;
+}
+
+body{
+min-height:100vh;
+background:linear-gradient(135deg,#ff9ec4,#ffd6ec,#c8f7ff);
+padding:20px;
+overflow-x:hidden;
+}
+
+body.dark{
+background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+color:white;
+}
+
+h1{
+text-align:center;
+margin-bottom:10px;
+}
+
+.top-bar{
+text-align:center;
+margin-bottom:20px;
+}
+
+.toggle-btn{
+padding:8px 15px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+background:#ff4d88;
+color:white;
+}
+
+body.dark .toggle-btn{
+background:#222;
+color:#fff;
+}
+
+/* Quote Slider */
+.quote-box{
+text-align:center;
+margin-bottom:25px;
+font-size:18px;
+font-style:italic;
+color:#ff4d88;
+}
+
+body.dark .quote-box{
+color:#ffb6ff;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+}
+
+.form-box{
+background:rgba(255,255,255,0.9);
+padding:20px;
+border-radius:15px;
+box-shadow:0 8px 25px rgba(0,0,0,0.15);
+margin-bottom:30px;
+}
+
+body.dark .form-box{
+background:rgba(0,0,0,0.5);
+}
+
+.form-box input,.form-box button{
+padding:12px;
+margin:8px 0;
+width:100%;
+border-radius:8px;
+border:none;
+}
+
+.form-box button{
+background:linear-gradient(45deg,#ff4d88,#ff85a2);
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.album{
+background:rgba(255,255,255,0.9);
+padding:20px;
+border-radius:15px;
+box-shadow:0 8px 25px rgba(0,0,0,0.15);
+margin-bottom:40px;
+}
+
+body.dark .album{
+background:rgba(0,0,0,0.5);
+}
+
+.album h2{
+color:#ff4d88;
+margin-bottom:15px;
+}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:15px;
+}
+
+.gallery img{
+width:100%;
+height:160px;
+object-fit:cover;
+border-radius:12px;
+cursor:pointer;
+}
+
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+justify-content:center;
+align-items:center;
+z-index:1000;
+}
+
+.modal img{
+max-width:90%;
+max-height:85%;
+border-radius:15px;
+}
+
+.close{
+position:absolute;
+top:25px;
+right:35px;
+color:white;
+font-size:35px;
+cursor:pointer;
+}
+
+/* Login Screen */
+#loginScreen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#ff4d88,#ff85a2);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:2000;
+}
+
+.login-box{
+background:white;
+padding:30px;
+border-radius:15px;
+text-align:center;
+}
+
+.login-box input{
+padding:10px;
+margin:10px 0;
+width:100%;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.login-box button{
+padding:10px;
+width:100%;
+border:none;
+background:#ff4d88;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔐 Password Screen -->
+<div id="loginScreen">
+<div class="login-box">
+<h2>🔐 Private Memories</h2>
+<input type="password" id="passwordInput" placeholder="Enter Password">
+<button onclick="checkPassword()">Unlock 💖</button>
+</div>
+</div>
+
+<h1>💖 Our Romantic & Friendship Memories 🤝</h1>
+
+<div class="top-bar">
+<button class="toggle-btn" onclick="toggleDarkMode()">🌙 Toggle Night Mode</button>
+</div>
+
+<!-- 💌 Friendship Quotes Slider -->
+<div class="quote-box" id="quoteBox"></div>
+
+<div class="container">
+
+<div class="form-box">
+<input type="text" id="albumTitle" placeholder="Album Title">
+<input type="date" id="albumDate">
+<input type="file" id="albumImages" multiple>
+<button onclick="createAlbum()">Create Memory Album 💝</button>
+</div>
+
+<div id="albumsContainer"></div>
+
+</div>
+
+<div class="modal" id="imageModal">
+<span class="close" onclick="closeModal()">✖</span>
+<img id="modalImg">
+</div>
+
+<script>
+/* 🔐 PASSWORD */
+const correctPassword="love123"; // Change this
+
+function checkPassword(){
+let input=document.getElementById("passwordInput").value;
+if(input===correctPassword){
+document.getElementById("loginScreen").style.display="none";
+}else{
+alert("Wrong Password 💔");
+}
+}
+
+/* 🌙 DARK MODE */
+function toggleDarkMode(){
+document.body.classList.toggle("dark");
+}
+
+/* 💌 QUOTES SLIDER */
+const quotes=[
+"True friendship is a treasure 💕",
+"Every memory with you is priceless 🤝",
+"Best friends make the good times better 💖",
+"Together is my favorite place to be 💞",
+"Love and friendship forever 🌸"
+];
+
+let quoteIndex=0;
+function showQuotes(){
+document.getElementById("quoteBox").innerText=quotes[quoteIndex];
+quoteIndex=(quoteIndex+1)%quotes.length;
+}
+setInterval(showQuotes,3000);
+showQuotes();
+
+/* 📸 ALBUM STORAGE */
+let albums=JSON.parse(localStorage.getItem("albums"))||[];
+
+function saveAlbums(){
+localStorage.setItem("albums",JSON.stringify(albums));
+}
+
+function renderAlbums(){
+document.getElementById("albumsContainer").innerHTML="";
+albums.forEach((album)=>{
+let albumDiv=document.createElement("div");
+albumDiv.className="album";
+
+let heading=document.createElement("h2");
+heading.innerText="💞 "+album.title+" - "+album.date;
+albumDiv.appendChild(heading);
+
+let gallery=document.createElement("div");
+gallery.className="gallery";
+
+album.images.forEach(src=>{
+let img=document.createElement("img");
+img.src=src;
+img.onclick=function(){openModal(src);}
+gallery.appendChild(img);
+});
+
+albumDiv.appendChild(gallery);
+document.getElementById("albumsContainer").appendChild(albumDiv);
+});
+}
+
+function createAlbum(){
+let title=document.getElementById("albumTitle").value;
+let date=document.getElementById("albumDate").value;
+let files=document.getElementById("albumImages").files;
+
+if(title===""||date===""||files.length===0){
+alert("Fill all fields 💕");
+return;
+}
+
+let imageArray=[];
+let loaded=0;
+
+for(let i=0;i<files.length;i++){
+let reader=new FileReader();
+reader.onload=function(e){
+imageArray.push(e.target.result);
+loaded++;
+if(loaded===files.length){
+albums.push({title,date,images:imageArray});
+saveAlbums();
+renderAlbums();
+}
+}
+reader.readAsDataURL(files[i]);
+}
+
+document.getElementById("albumTitle").value="";
+document.getElementById("albumDate").value="";
+document.getElementById("albumImages").value="";
+}
+
+function openModal(src){
+document.getElementById("imageModal").style.display="flex";
+document.getElementById("modalImg").src=src;
+}
+
+function closeModal(){
+document.getElementById("imageModal").style.display="none";
+}
+
+renderAlbums();
+</script>
+
+</body>
+</html>
